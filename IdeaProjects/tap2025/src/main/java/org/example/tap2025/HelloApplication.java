@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import org.example.tap2025.vistas.Calculadora;
 
 import java.io.IOException;
 
@@ -15,21 +16,25 @@ public class HelloApplication extends Application {
     private VBox vBox;
     private MenuBar mnBarPrincipal;
     private Menu mnCompetencia1, mnCompetencia2;
-    private MenuItem mitCalculadora;
+    private MenuItem mitCalculadora, mitSalida;
     private Scene escena;
 
     void CrearUI(){
         mitCalculadora = new MenuItem("Calculadora");
-        mnCompetencia1 = new Menu("competencia 1");
-        mnCompetencia1.getItems().addAll(mitCalculadora);
-        mnCompetencia2 = new Menu();
+        mitSalida = new MenuItem("Salida");
+        mitCalculadora.setOnAction(event -> new Calculadora());
+        mitSalida.setOnAction(event -> System.exit(0));
+        mnCompetencia1 = new Menu("Competencia 1");
+        mnCompetencia1.getItems().addAll(mitCalculadora, mitSalida);
+        mnCompetencia2 = new Menu("Competencia 2");
         mnBarPrincipal = new MenuBar();
         mnBarPrincipal.getMenus().addAll(mnCompetencia1, mnCompetencia2);
+        vBox = new VBox(mnBarPrincipal);
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        vBox = new VBox();
+        CrearUI();
         stage.setTitle("Hola mundo de eventos :D");
         stage.setScene(new Scene(vBox));
         stage.setMaximized(true);
