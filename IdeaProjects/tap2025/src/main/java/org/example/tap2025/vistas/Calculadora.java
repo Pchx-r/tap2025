@@ -23,6 +23,8 @@ public class Calculadora extends Stage {
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10,10,10,10));
         escena = new Scene(vBox, 200, 200);
+        escena.getStylesheets().add(getClass().getResource("/styles/calcu.css").toString());
+
     }
     public Calculadora(){
         CrearUI();
@@ -39,6 +41,9 @@ public class Calculadora extends Stage {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 arBtnTeclado[j][i] = new Button(strKeys[pos]);
+                if(strKeys[pos].equals("*")){
+                    arBtnTeclado[j][i].setId("fontButton");
+                }
                 int finalPos = pos;
                 arBtnTeclado[j][i].setOnAction(event -> EventoTeclado(strKeys[finalPos]));
                 arBtnTeclado[j][i].setPrefSize(50,50);
