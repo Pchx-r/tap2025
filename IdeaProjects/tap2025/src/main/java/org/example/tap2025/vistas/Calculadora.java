@@ -90,6 +90,7 @@ public class Calculadora extends Stage {
         }else if(strTecla.equals("*") ||strTecla.equals("/")||strTecla.equals("+")||strTecla.equals("-")){
 
             try{
+                if(lblDisplay.getText().equals("*")||strTecla.equals("/")||strTecla.equals("+")||strTecla.equals("-")){}
                 num2 = lblDisplay.getText();
                 num1 = resultado();
                 lblDisplay.setText(num1);
@@ -105,6 +106,7 @@ public class Calculadora extends Stage {
             if(flag){
                 lblDisplay.setText("");
                 flag = false;
+                num1 = null;
             }
             lblDisplay.setText(lblDisplay.getText()+strTecla);
         }
