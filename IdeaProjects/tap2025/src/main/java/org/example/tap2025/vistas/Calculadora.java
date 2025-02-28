@@ -13,6 +13,8 @@ public class Calculadora extends Stage {
     private Scene escena;
     private Label lblDisplay;
     private VBox vBox;
+    private TextField txt = new TextField();
+
     private GridPane gdpTeclado;
     private Button[][] arBtnTeclado;
     String strKeys[] = {"7","8","9","*","4","5","6","/","1","2","3","+","=","0",".","-"};
@@ -22,6 +24,7 @@ public class Calculadora extends Stage {
     public void CrearUI(){
         CreateKeyboard();
         lblDisplay = new Label("0");
+
         vBox = new VBox(lblDisplay,gdpTeclado);
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10,10,10,10));

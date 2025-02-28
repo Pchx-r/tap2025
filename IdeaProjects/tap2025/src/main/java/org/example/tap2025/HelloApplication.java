@@ -9,8 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.tap2025.modelos.Conexion;
-import org.example.tap2025.vistas.Calculadora;
-import org.example.tap2025.vistas.VentasRestaurante;
+import org.example.tap2025.vistas.*;
 
 import java.io.IOException;
 
@@ -18,16 +17,18 @@ public class HelloApplication extends Application {
     private VBox vBox;
     private MenuBar mnBarPrincipal;
     private Menu mnCompetencia1, mnCompetencia2;
-    private MenuItem mitCalculadora, mitSalida, mitRestaurante;
+    private MenuItem mitCalculadora, mitSalida, mitRestaurante, mitRompecabezas;
     private Scene escena;
 
     void CrearUI(){
         mitCalculadora = new MenuItem("Calculadora");
         mitSalida = new MenuItem("Salida");
         mitRestaurante = new MenuItem("Restaurante");
+        mitRompecabezas = new MenuItem("Rompecabezas");
         mitCalculadora.setOnAction(event -> new Calculadora());
         mitSalida.setOnAction(event -> System.exit(0));
-        mitRestaurante.setOnAction(event -> new VentasRestaurante());
+        mitRestaurante.setOnAction(event -> new LIstaClientes());
+        mitRompecabezas.setOnAction(event -> new Rompecabezas());
         mnCompetencia1 = new Menu("Competencia 1");
         mnCompetencia1.getItems().addAll(mitCalculadora, mitRestaurante , mitSalida );
         mnCompetencia2 = new Menu("Competencia 2");
