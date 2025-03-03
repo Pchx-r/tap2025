@@ -24,7 +24,6 @@ public class Calculadora extends Stage {
     public void CrearUI(){
         CreateKeyboard();
         lblDisplay = new Label("0");
-
         vBox = new VBox(lblDisplay,gdpTeclado);
         vBox.setSpacing(10);
         vBox.setPadding(new Insets(10,10,10,10));

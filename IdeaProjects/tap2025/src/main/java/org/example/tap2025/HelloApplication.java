@@ -30,7 +30,7 @@ public class HelloApplication extends Application {
         mitRestaurante.setOnAction(event -> new LIstaClientes());
         mitRompecabezas.setOnAction(event -> new Rompecabezas());
         mnCompetencia1 = new Menu("Competencia 1");
-        mnCompetencia1.getItems().addAll(mitCalculadora, mitRestaurante , mitSalida );
+        mnCompetencia1.getItems().addAll(mitCalculadora, mitRestaurante , mitRompecabezas, mitSalida );
         mnCompetencia2 = new Menu("Competencia 2");
         mnBarPrincipal = new MenuBar();
         mnBarPrincipal.getMenus().addAll(mnCompetencia1, mnCompetencia2);
