@@ -10,5 +10,6 @@ module org.example.tap2025 {
     requires mysql.connector.j;
     requires java.sql;
     requires java.xml.crypto;
+    requires org.apache.pdfbox;
     opens org.example.tap2025.modelos;
 }
