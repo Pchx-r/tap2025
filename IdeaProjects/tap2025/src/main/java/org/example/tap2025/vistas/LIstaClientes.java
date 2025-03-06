@@ -28,11 +28,12 @@ public class LIstaClientes extends Stage {
 
     private void CrearUI(){
         btnAgregar = new Button();
+        btnAgregar.setOnAction(event -> new Cliente(tbvClientes));
         ImageView imv = new ImageView(getClass().getResource("/images/person-add.256x256.png").toString());
         imv.setFitWidth(20);
         imv.setFitHeight(20);
         btnAgregar.setGraphic(imv);
-        tlbMenu = new ToolBar();
+        tlbMenu = new ToolBar(btnAgregar);
         tbvClientes = new TableView<>();
         CreateTable();
         vbox = new VBox(tlbMenu, tbvClientes);

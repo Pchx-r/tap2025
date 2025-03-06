@@ -1,16 +1,14 @@
 package org.example.tap2025.vistas;
 
 import javafx.collections.FXCollections;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
-import org.kordamp.bootstrapfx.scene.layout.Panel;
 
 public class Rompecabezas extends Stage {
     private Scene escena;
@@ -37,18 +35,22 @@ public class Rompecabezas extends Stage {
         gdpContenedor.add(cBox, 0, 0);
         gdpContenedor.add(btnConfirmar, 0, 1);
         escena = new Scene(gdpContenedor, 300, 200);
+        Alert a = new Alert(Alert.AlertType.NONE);
         escena.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
         btnConfirmar.setOnAction(event ->{
             tipo = cBox.getSelectionModel().getSelectedItem();
             if (tipo != null) {
                 EventoComboBox(tipo);
             } else {
-                System.out.println("Por favor, selecciona un valor antes de confirmar.");
+                a.setAlertType(Alert.AlertType.ERROR);
+                a.setTitle("Error");
+                a.setContentText("Por favor, selecciona un valor antes de confirmar.");
+                a.show();
             }
         });
     }
 
     public void EventoComboBox(String strCombo){
-        new Rompecabezas9(Integer.parseInt(strCombo));
+        new RompecabezasVentana(Integer.parseInt(strCombo));
     }
 }
