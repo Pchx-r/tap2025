@@ -17,10 +17,19 @@ public class Cliente extends Stage {
     private ClientesDAO objC;
     private TableView<ClientesDAO> tbvClientes;
 
-    public Cliente(TableView<ClientesDAO> tbvClientes) {
-        this.tbvClientes = tbvClientes;
-        objC = new ClientesDAO();
+    public Cliente(TableView<ClientesDAO> tbvCte, ClientesDAO obj){
+        this.tbvClientes = tbvCte;
         CrearUI();
+        if( obj == null ){
+            objC = new ClientesDAO();
+        }else{
+            objC = obj;
+            txtNombre.setText(objC.getNomCte());
+            txtDireccion.setText(objC.getDireccion());
+            txtEmail.setText(objC.getEmailCte());
+            txtTelCte.setText(objC.getTelCte());
+        }
+        //objC = obj == null ? new ClientesDAO() : obj;
         this.setTitle("Registrar Cliente");
         this.setScene(escena);
         this.show();
@@ -35,7 +44,13 @@ public class Cliente extends Stage {
             objC.setNomCte(txtNombre.getText());
             objC.setDireccion(txtDireccion.getText());
             objC.setEmailCte(txtEmail.getText());
-            objC.setTelefon(txtTelCte.getText());
+            objC.setTelCte(txtTelCte.getText());
+            if(objC.getIdCte()>0){
+                objC.UPDATE();
+            }else {
+                objC.INSERT();
+                tbvClientes.setItems(objC.SELECT());
+            }
             objC.INSERT();
             tbvClientes.setItems(objC.SELECT());
         });
