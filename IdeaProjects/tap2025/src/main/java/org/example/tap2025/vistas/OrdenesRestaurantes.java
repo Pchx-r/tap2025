@@ -1,6 +1,7 @@
 package org.example.tap2025.vistas;
 
 import com.mysql.cj.xdevapi.Table;
+import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -116,7 +117,6 @@ public class OrdenesRestaurantes extends Stage {
     private void CreateGridCategorias() {
         ObservableList<CategoriaDAO> categorias = categoriaDAO.SELECT();
         btnCategoria = new Button[categorias.size()];
-
         int columnasPorFila = 3;
         int filasNecesarias = (int) Math.ceil((double) categorias.size() / columnasPorFila);
 
