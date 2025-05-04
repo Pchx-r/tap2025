@@ -87,18 +87,4 @@ public class CategoriaDAO {
         return listaC;
     }
 
-    public int Count(){
-        String query = "SELECT COUNT(*) as cantidad FROM categoria";
-        int nro_categorias = 0;
-        try{
-            Statement stmt = Conexion.connection.createStatement();
-            ResultSet res = stmt.executeQuery(query);
-            if(res.next()){
-                nro_categorias = res.getInt("cantidad");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return nro_categorias;
-    }
 }

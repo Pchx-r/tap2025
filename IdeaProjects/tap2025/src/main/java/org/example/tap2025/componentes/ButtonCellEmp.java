@@ -16,7 +16,7 @@ public class ButtonCellEmp extends TableCell<EmpleadoDAO, String> {
     public ButtonCellEmp(String label) {
         strLabelBtn = label;
         btnCelda = new Button(strLabelBtn);
-        btnCelda.setOnAction(e -> {
+        btnCelda.setOnAction(event -> {
             EmpleadoDAO objE = this.getTableView().getItems().get(this.getIndex());
             if (strLabelBtn.equals("Editar")) {
                 new Empleado(this.getTableView(), objE);

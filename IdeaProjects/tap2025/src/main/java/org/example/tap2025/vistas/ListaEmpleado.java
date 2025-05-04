@@ -58,6 +58,8 @@ public class ListaEmpleado extends Stage{
         tbcFechaIngreso.setCellValueFactory(new PropertyValueFactory<>("fechaIngreso"));
         TableColumn<EmpleadoDAO, String> tbcNssEmp = new TableColumn<>("Nss");
         tbcNssEmp.setCellValueFactory(new PropertyValueFactory<>("nssEmp"));
+        TableColumn<EmpleadoDAO, String> tbcUsuario = new TableColumn<>("user");
+        tbcUsuario.setCellValueFactory(new PropertyValueFactory<>("user"));
 
         TableColumn<EmpleadoDAO, String> tbcEditar = new TableColumn<>("Editar");
         tbcEditar.setCellFactory(new Callback<TableColumn<EmpleadoDAO, String>, TableCell<EmpleadoDAO, String>>() {
@@ -74,7 +76,7 @@ public class ListaEmpleado extends Stage{
             }
         });
 
-        tbvEmpleados.getColumns().addAll(tbcNomEmp,tbcCurp, tbcRfc, tbcSueldo, tbcPuesto, tbcCelEmp, tbcHorario, tbcFechaIngreso, tbcNssEmp, tbcEditar, tbcEliminar);
+        tbvEmpleados.getColumns().addAll(tbcNomEmp,tbcCurp, tbcRfc, tbcSueldo, tbcPuesto, tbcCelEmp, tbcHorario, tbcFechaIngreso, tbcNssEmp, tbcUsuario, tbcEditar, tbcEliminar);
         tbvEmpleados.setItems(objE.SELECT());
     }
 }

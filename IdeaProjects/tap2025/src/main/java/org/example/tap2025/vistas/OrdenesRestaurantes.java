@@ -1,9 +1,11 @@
 package org.example.tap2025.vistas;
 
-import com.mysql.cj.xdevapi.Table;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -17,17 +19,17 @@ import org.example.tap2025.modelos.ProductoDAO;
 
 public class OrdenesRestaurantes extends Stage {
     private HBox hBoxOptions;
+    private HBox hboxMOP;
     private Scene escena;
     private Button btnOrdenes, btnEmpleados;
     private Button[] btnMesa;
     private Button[] btnCategoria;
     private GridPane gdpMesas;
     private BorderPane borderPane;
-    private MesaDAO mesaDAO;
-    private TableView tbvOrden;
+    private TableView<OrdenDAO> tbvOrden;
     private GridPane gdpCategorias;
     private CategoriaDAO categoriaDAO;
-    private TableView<ProductoDAO> tbvProductos;
+    private GridPane gdpProductos;
     private ProductoDAO productoDAO;
 
     public OrdenesRestaurantes() {
@@ -35,20 +37,17 @@ public class OrdenesRestaurantes extends Stage {
         this.setTitle("Ordenes Restaurante");
         this.setScene(escena);
         this.setMinHeight(800);
-        this.setMinWidth(800);
+        this.setMinWidth(1000);
         this.show();
     }
 
     private void CrearUI() {
         btnOrdenes = new Button("Ordenes");
         btnEmpleados = new Button("Empleados");
-        mesaDAO = new MesaDAO();
         categoriaDAO = new CategoriaDAO();
         gdpMesas = new GridPane();
         gdpCategorias = new GridPane();
-        tbvOrden = new TableView();
         productoDAO = new ProductoDAO();
-        CreateProductosTable();
         CreateTableOrden();
         CreateGridMesas();
         CreateGridCategorias();
@@ -63,16 +62,18 @@ public class OrdenesRestaurantes extends Stage {
         btnEmpleados.setGraphic(imv);
         btnEmpleados.setOnAction(event -> new ListaEmpleado());
         hBoxOptions = new HBox();
-        hBoxOptions.getChildren().addAll(btnOrdenes,btnEmpleados);
+        hBoxOptions.getChildren().addAll(btnOrdenes, btnEmpleados);
         borderPane = new BorderPane();
+        hboxMOP = new HBox();
+        hboxMOP.getChildren().addAll(gdpMesas,tbvOrden,gdpCategorias);
         borderPane.setTop(hBoxOptions);
-        borderPane.setLeft(gdpMesas);
-        borderPane.setCenter(tbvOrden);
-        borderPane.setRight(gdpCategorias);
+        borderPane.setCenter(hboxMOP);
+
         escena = new Scene(borderPane);
     }
+
     private void CreateTableOrden() {
-        OrdenDAO objO = new OrdenDAO();
+        tbvOrden = new TableView<>();
         TableColumn<OrdenDAO, String> tbcID = new TableColumn<>("ID Orden");
         tbcID.setCellValueFactory(new PropertyValueFactory<>("id_orden"));
         TableColumn<OrdenDAO, String> tbcFecha = new TableColumn<>("Fecha");
@@ -83,29 +84,33 @@ public class OrdenesRestaurantes extends Stage {
         tbcCliente.setCellValueFactory(new PropertyValueFactory<>("nomCte"));
         TableColumn<OrdenDAO, String> tbcNomesa = new TableColumn<>("Número de Mesa");
         tbcNomesa.setCellValueFactory(new PropertyValueFactory<>("no_mesa"));
-
         TableColumn<OrdenDAO, String> tbcFinalizar = new TableColumn<>("Finalizar");
+
         tbcFinalizar.setCellFactory(new Callback<TableColumn<OrdenDAO, String>, TableCell<OrdenDAO, String>>() {
             @Override
             public TableCell<OrdenDAO, String> call(TableColumn<OrdenDAO, String> ordenDAOStringTableColumn) {
                 return new ButtonCellOrden("Finalizar");
             }
         });
-
-        tbvOrden.getColumns().addAll(tbcID,tbcFecha,tbcTotal,tbcCliente,tbcNomesa,tbcFinalizar);
-        tbvOrden.setItems(objO.FIND(1));
+        tbvOrden.getColumns().addAll(tbcID, tbcFecha, tbcTotal, tbcCliente, tbcNomesa, tbcFinalizar);
+        tbvOrden.resize(25,25);
     }
-    private void CreateGridMesas(){
+
+    private void CreateGridMesas() {
+        MesaDAO mesaDAO = new MesaDAO();
         btnMesa = new Button[mesaDAO.Count()];
         int totalMesas = mesaDAO.Count();
         int columnasPorFila = 3;
         int filasNecesarias = (int) Math.ceil((double) totalMesas / columnasPorFila);
-
         int count = 0;
         for (int fila = 0; fila < filasNecesarias; fila++) {
             for (int columna = 0; columna < columnasPorFila; columna++) {
                 if (count < totalMesas) {
-                    btnMesa[count] = new Button("Mesa " + (count + 1));
+                    final int mesaId = count + 1;
+                    btnMesa[count] = new Button("Mesa " + mesaId);
+                    btnMesa[count].setOnAction(e -> {
+                        UpdateTableOrden(mesaId);
+                    });
                     gdpMesas.add(btnMesa[count], columna, fila);
                     count++;
                 } else {
@@ -114,25 +119,23 @@ public class OrdenesRestaurantes extends Stage {
             }
         }
     }
+
     private void CreateGridCategorias() {
         ObservableList<CategoriaDAO> categorias = categoriaDAO.SELECT();
         btnCategoria = new Button[categorias.size()];
         int columnasPorFila = 3;
         int filasNecesarias = (int) Math.ceil((double) categorias.size() / columnasPorFila);
-
         int count = 0;
         for (int fila = 0; fila < filasNecesarias; fila++) {
             for (int columna = 0; columna < columnasPorFila; columna++) {
                 if (count < categorias.size()) {
                     CategoriaDAO categoria = categorias.get(count);
-                    btnCategoria[count] = new Button(categoria.getNombre());
+                    Button btnCat = new Button(categoria.getNombre());
                     final int catId = categoria.getIdCategoria();
-
-                    btnCategoria[count].setOnAction(e -> {
-                        tbvProductos.setItems(productoDAO.SELECT_BY_CATEGORIA(catId));
+                    btnCat.setOnAction(e -> {
+                        CreateGridProductos(catId);
                     });
-
-                    gdpCategorias.add(btnCategoria[count], columna, fila);
+                    gdpCategorias.add(btnCat, columna, fila);
                     count++;
                 } else {
                     break;
@@ -141,21 +144,34 @@ public class OrdenesRestaurantes extends Stage {
         }
     }
 
-    private void CreateProductosTable() {
-        tbvProductos = new TableView<>();
+    private void CreateGridProductos(int categoriaId) {
+        ObservableList<ProductoDAO> productos = productoDAO.SELECT_BY_CATEGORIA(categoriaId);
+        gdpProductos = new GridPane();
+        int columnasPorFila = 3;
+        int filasNecesarias = (int) Math.ceil((double) productos.size() / columnasPorFila);
+        int count = 0;
+        for (int fila = 0; fila < filasNecesarias; fila++) {
+            for (int columna = 0; columna < columnasPorFila; columna++) {
+                if (count < productos.size()) {
+                    ProductoDAO producto = productos.get(count);
+                    Button btnProd = new Button(producto.getNombre_producto());
+                    gdpProductos.add(btnProd, columna, fila);
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        }
+        Button btnRegresar = new Button("Regresar");
+        btnRegresar.setOnAction(e -> borderPane.setRight(gdpCategorias));
+        VBox vboxProductos = new VBox(gdpProductos, btnRegresar);
+        vboxProductos.setSpacing(10);
+        borderPane.setRight(vboxProductos);
+    }
 
-        TableColumn<ProductoDAO, String> tbcNombre = new TableColumn<>("Producto");
-        tbcNombre.setCellValueFactory(new PropertyValueFactory<>("nombre_producto"));
-
-        TableColumn<ProductoDAO, String> tbcPrecio = new TableColumn<>("Precio");
-        tbcPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
-
-        TableColumn<ProductoDAO, String> tbcCosto = new TableColumn<>("Costo");
-        tbcCosto.setCellValueFactory(new PropertyValueFactory<>("costo"));
-
-        tbvProductos.getColumns().addAll(tbcNombre, tbcPrecio, tbcCosto);
-
-        VBox vbox = new VBox(tbvProductos);
-        borderPane.setRight(vbox);
+    private void UpdateTableOrden(int mesaId) {
+        OrdenDAO ordenDAO = new OrdenDAO();
+        tbvOrden.setItems(ordenDAO.FIND(mesaId));
+        tbvOrden.refresh();
     }
 }

@@ -12,7 +12,7 @@ import org.example.tap2025.modelos.EmpleadoDAO;
 
 public class Empleado extends Stage {
     private Button btnGuardar;
-    private TextField txtNombre, txtApellido1, txtApellido2, txtCurp, txtRfc, txtSueldo, txtPuesto, txtCelEmp, txtHorario, txtFechaIngreso, txtNssEmp;
+    private TextField txtNombre, txtApellido1, txtApellido2, txtCurp, txtRfc, txtSueldo, txtPuesto, txtCelEmp, txtHorario, txtFechaIngreso, txtNssEmp, txtUser, txtPasswrd;
     private VBox vBox;
     private Scene escena;
     private EmpleadoDAO objE;
@@ -36,6 +36,7 @@ public class Empleado extends Stage {
             txtHorario.setText(objE.getHorario());
             txtFechaIngreso.setText(objE.getFechaIngreso());
             txtNssEmp.setText(objE.getNssEmp());
+            txtUser.setText(objE.getUser());
         }
         this.setTitle("Registrar Cliente");
         this.setScene(escena);
@@ -60,8 +61,14 @@ public class Empleado extends Stage {
         txtCelEmp = new TextField();
         Label lblHorario = new Label("Hora: ");
         txtHorario = new TextField();
+        Label lblFechaIngreso = new Label("Fecha de ingreso: ");
         txtFechaIngreso = new TextField();
+        Label lblNssEmp = new Label("Nss: ");
         txtNssEmp = new TextField();
+        Label lblUser = new Label("User: ");
+        txtUser = new TextField();
+        Label lblPasswrd = new Label("Password: ");
+        txtPasswrd = new TextField();
         btnGuardar = new Button("Guardar");
         btnGuardar.setOnAction(event -> {
             objE.setNombre(txtNombre.getText());
@@ -75,6 +82,7 @@ public class Empleado extends Stage {
             objE.setHorario(txtHorario.getText());
             objE.setFechaIngreso(txtFechaIngreso.getText());
             objE.setNssEmp(txtNssEmp.getText());
+            objE.setUser(txtUser.getText());
             if (objE.getIdEmpleado()>0){
                 objE.UPDATE();
             }else {
@@ -84,7 +92,7 @@ public class Empleado extends Stage {
             objE.INSERT();
             tbvEmpleados.setItems(objE.SELECT());
         });
-        vBox = new VBox(lblNombre,txtNombre,txtApellido1,txtApellido2,txtCurp,txtRfc,txtSueldo,txtPuesto,txtCelEmp,txtHorario,txtFechaIngreso,txtNssEmp,btnGuardar);
+        vBox = new VBox(lblNombre,txtNombre,lblApellido1,txtApellido1,lblApellido2,txtApellido2,lblCurp,txtCurp,lblRfc,txtRfc,lblSueldo,txtSueldo,lblPuesto,txtPuesto,lblCelEmp,txtCelEmp,lblHorario,txtHorario,lblFechaIngreso,txtFechaIngreso,lblNssEmp,txtNssEmp,lblUser,txtUser,lblPasswrd,txtPasswrd,btnGuardar);
         escena = new Scene(vBox);
     }
 }

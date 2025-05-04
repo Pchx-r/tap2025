@@ -19,6 +19,24 @@ public class EmpleadoDAO {
     private String horario;
     private String fechaIngreso;
     private String nssEmp;
+    private String user;
+    private String passwrd;
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPasswrd() {
+        return passwrd;
+    }
+
+    public void setPasswrd(String passwrd) {
+        this.passwrd = passwrd;
+    }
 
     public int getIdEmpleado() {
         return idEmpleado;
@@ -117,8 +135,8 @@ public class EmpleadoDAO {
     }
 
     public void INSERT(){
-        String query = "INSERT INTO clientes(nombre,apellido1,apellido2,curp,rfc,sueldo,puesto,celEmp,horario,fechaIngreso,nssEmp) " +
-                "values('"+nombre+"','"+apellido1+"','"+apellido2+"','"+curp+"','"+rfc+"','"+sueldo+"','"+puesto+"','"+celEmp+"','"+horario+"','"+fechaIngreso+"','"+nssEmp+"')";
+        String query = "INSERT INTO empleado(nombre,apellido1,apellido2,curp,rfc,sueldo,puesto,celEmp,horario,fechaIngreso,nssEmp,user,passwrd) " +
+                "values('"+nombre+"','"+apellido1+"','"+apellido2+"','"+curp+"','"+rfc+"','"+sueldo+"','"+puesto+"','"+celEmp+"','"+horario+"','"+fechaIngreso+"','"+nssEmp+"','"+ user+"',aes_encrypt('"+passwrd+"','clave'))";
         try{
             Statement stmt = Conexion.connection.createStatement();
             stmt.executeUpdate(query);
@@ -133,7 +151,7 @@ public class EmpleadoDAO {
                 "curp = '"+curp+"',rfc = '"+rfc+"',"+
                 "sueldo = '"+sueldo+"', puesto = '"+puesto+"',"+
                 "celEmp = '"+celEmp+"', horario ='"+horario+"',"+
-                "fechaIngreso = '"+fechaIngreso+"', nssEmp = '"+nssEmp+"' WHERE idEmpleado = "+idEmpleado;
+                "fechaIngreso = '"+fechaIngreso+"', nssEmp = '"+nssEmp+"', user = '"+user+"' WHERE idEmpleado = "+idEmpleado;
         try {
             Statement stmt = Conexion.connection.createStatement();
             stmt.executeUpdate(query);
@@ -143,7 +161,7 @@ public class EmpleadoDAO {
     }
 
     public void DELETE() {
-    String query = "DELETE FROM empleado WHERE idEmpleado = "+idEmpleado;
+    String query = "DELETE FROM empleado WHERE id_empleado = "+idEmpleado;
         try {
             Statement stmt = Conexion.connection.createStatement();
             stmt.executeUpdate(query);
@@ -153,7 +171,7 @@ public class EmpleadoDAO {
     }
 
     public ObservableList<EmpleadoDAO> SELECT(){
-        String query = "select concat(nombre, ' ', apellido1, ' ', empleado.apellido2 ) as nombre,curp,rfc,sueldo,puesto,celEmp,horario,fechaIngreso, nssEmp\n" +
+        String query = "select id_empleado,concat(nombre, ' ', apellido1, ' ', empleado.apellido2 ) as nombre,curp,rfc,sueldo,puesto,celEmp,horario,fechaIngreso,nssEmp,user\n" +
                 "from empleado";
         ObservableList<EmpleadoDAO> listaE = FXCollections.observableArrayList();
         EmpleadoDAO objE;
@@ -162,6 +180,7 @@ public class EmpleadoDAO {
             ResultSet res = stmt.executeQuery(query);
             while(res.next()){
                 objE = new EmpleadoDAO();
+                objE.setIdEmpleado(res.getInt("id_empleado"));
                 objE.setNombre(res.getString("nombre"));
                 objE.setCurp(res.getString("curp"));
                 objE.setRfc(res.getString("rfc"));
@@ -171,6 +190,7 @@ public class EmpleadoDAO {
                 objE.setHorario(res.getString("horario"));
                 objE.setFechaIngreso(res.getString("fechaIngreso"));
                 objE.setNssEmp(res.getString("nssEmp"));
+                objE.setUser(res.getString("user"));
                 listaE.add(objE);
             }
         }catch (Exception e){
