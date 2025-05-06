@@ -1,5 +1,6 @@
 package org.example.tap2025.vistas;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -7,6 +8,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -17,11 +19,15 @@ import org.example.tap2025.modelos.MesaDAO;
 import org.example.tap2025.modelos.OrdenDAO;
 import org.example.tap2025.modelos.ProductoDAO;
 
+import java.io.ByteArrayInputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class OrdenesRestaurantes extends Stage {
     private HBox hBoxOptions;
-    private HBox hboxMOP;
     private Scene escena;
-    private Button btnOrdenes, btnEmpleados;
+    private int mesaSeleccionada;
+    private Button btnOrdenes, btnEmpleados, btnAdmProd, btnAdmCategory;
     private Button[] btnMesa;
     private Button[] btnCategoria;
     private GridPane gdpMesas;
@@ -31,19 +37,24 @@ public class OrdenesRestaurantes extends Stage {
     private CategoriaDAO categoriaDAO;
     private GridPane gdpProductos;
     private ProductoDAO productoDAO;
+    private OrdenDAO ordenDAO;
+    private ObservableList<OrdenDAO> ordenes;
 
     public OrdenesRestaurantes() {
         CrearUI();
         this.setTitle("Ordenes Restaurante");
         this.setScene(escena);
         this.setMinHeight(800);
-        this.setMinWidth(1000);
+        this.setMinWidth(1200);
         this.show();
     }
 
     private void CrearUI() {
+        ordenDAO = new OrdenDAO();
         btnOrdenes = new Button("Ordenes");
         btnEmpleados = new Button("Empleados");
+        btnAdmProd = new Button("Administrar Productos");
+        btnAdmCategory = new Button("Administrar categorias");
         categoriaDAO = new CategoriaDAO();
         gdpMesas = new GridPane();
         gdpCategorias = new GridPane();
@@ -60,20 +71,30 @@ public class OrdenesRestaurantes extends Stage {
         imv.setFitHeight(60);
         imv.setFitWidth(60);
         btnEmpleados.setGraphic(imv);
-        btnEmpleados.setOnAction(event -> new ListaEmpleado());
+        btnEmpleados.setOnAction(event -> new PantallaAcceso());
+        imv = new ImageView(getClass().getResource("/images/comida.jpg").toString());
+        imv.setFitHeight(60);
+        imv.setFitWidth(60);
+        btnAdmProd.setGraphic(imv);
+        btnAdmProd.setOnAction(event -> new PantallaAccesoAlimentos());
+        imv = new ImageView(getClass().getResource("/images/añadir.jpg").toString());
+        imv.setFitHeight(60);
+        imv.setFitWidth(60);
+        btnAdmCategory.setGraphic(imv);
+        btnAdmCategory.setOnAction(event -> new PantallaAccesoCategorias());
         hBoxOptions = new HBox();
-        hBoxOptions.getChildren().addAll(btnOrdenes, btnEmpleados);
+        hBoxOptions.getChildren().addAll(btnOrdenes, btnEmpleados,btnAdmProd, btnAdmCategory);
         borderPane = new BorderPane();
-        hboxMOP = new HBox();
-        hboxMOP.getChildren().addAll(gdpMesas,tbvOrden,gdpCategorias);
         borderPane.setTop(hBoxOptions);
-        borderPane.setCenter(hboxMOP);
+        borderPane.setLeft(gdpMesas);
+        borderPane.setRight(gdpCategorias);
+        borderPane.setCenter(tbvOrden);
 
         escena = new Scene(borderPane);
     }
 
     private void CreateTableOrden() {
-        tbvOrden = new TableView<>();
+        tbvOrden = new TableView<>(ordenes);
         TableColumn<OrdenDAO, String> tbcID = new TableColumn<>("ID Orden");
         tbcID.setCellValueFactory(new PropertyValueFactory<>("id_orden"));
         TableColumn<OrdenDAO, String> tbcFecha = new TableColumn<>("Fecha");
@@ -85,16 +106,31 @@ public class OrdenesRestaurantes extends Stage {
         TableColumn<OrdenDAO, String> tbcNomesa = new TableColumn<>("Número de Mesa");
         tbcNomesa.setCellValueFactory(new PropertyValueFactory<>("no_mesa"));
         TableColumn<OrdenDAO, String> tbcFinalizar = new TableColumn<>("Finalizar");
-
         tbcFinalizar.setCellFactory(new Callback<TableColumn<OrdenDAO, String>, TableCell<OrdenDAO, String>>() {
             @Override
             public TableCell<OrdenDAO, String> call(TableColumn<OrdenDAO, String> ordenDAOStringTableColumn) {
-                return new ButtonCellOrden("Finalizar");
+                return new ButtonCellOrden("Finalizar") {
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (!empty) {
+                            btnCelda.setOnAction(event -> {
+                                OrdenDAO orden = getTableView().getItems().get(getIndex());
+                                orden.setFecha(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                                orden.setTotal(calcularTotalOrden());
+                                orden.UPDATE();
+                                getTableView().getItems().remove(getIndex());
+                                getTableView().refresh();
+                            });
+                        }
+                    }
+                };
             }
         });
         tbvOrden.getColumns().addAll(tbcID, tbcFecha, tbcTotal, tbcCliente, tbcNomesa, tbcFinalizar);
-        tbvOrden.resize(25,25);
+        tbvOrden.resize(25, 25);
     }
+
 
     private void CreateGridMesas() {
         MesaDAO mesaDAO = new MesaDAO();
@@ -108,8 +144,11 @@ public class OrdenesRestaurantes extends Stage {
                 if (count < totalMesas) {
                     final int mesaId = count + 1;
                     btnMesa[count] = new Button("Mesa " + mesaId);
+                    btnMesa[count].setMinSize(100, 100); // Ajustar tamaño mínimo
                     btnMesa[count].setOnAction(e -> {
+                        mesaSeleccionada = mesaId;
                         UpdateTableOrden(mesaId);
+
                     });
                     gdpMesas.add(btnMesa[count], columna, fila);
                     count++;
@@ -119,6 +158,7 @@ public class OrdenesRestaurantes extends Stage {
             }
         }
     }
+
 
     private void CreateGridCategorias() {
         ObservableList<CategoriaDAO> categorias = categoriaDAO.SELECT();
@@ -131,6 +171,13 @@ public class OrdenesRestaurantes extends Stage {
                 if (count < categorias.size()) {
                     CategoriaDAO categoria = categorias.get(count);
                     Button btnCat = new Button(categoria.getNombre());
+                    btnCat.setMinSize(100,100);
+                    if(categoria.getImagen() != null){
+                        ImageView imv = new ImageView(new Image(new ByteArrayInputStream(categoria.getImagen())));
+                        imv.setFitWidth(40);
+                        imv.setFitHeight(40);
+                        btnCat.setGraphic(imv);
+                    }
                     final int catId = categoria.getIdCategoria();
                     btnCat.setOnAction(e -> {
                         CreateGridProductos(catId);
@@ -155,6 +202,28 @@ public class OrdenesRestaurantes extends Stage {
                 if (count < productos.size()) {
                     ProductoDAO producto = productos.get(count);
                     Button btnProd = new Button(producto.getNombre_producto());
+                    if (producto.getImagen() != null) {
+                        ImageView imv = new ImageView(new Image(new ByteArrayInputStream(producto.getImagen())));
+                        imv.setFitWidth(40);
+                        imv.setFitHeight(40);
+                        btnProd.setGraphic(imv);
+                    }
+                    btnProd.setOnAction(event -> {
+                        OrdenDAO nuevaOrden = new OrdenDAO();
+                        nuevaOrden.setId_empleado(1);
+                        nuevaOrden.setId_orden(ordenes.size() + 1);
+                        nuevaOrden.setIdCte(1);
+                        nuevaOrden.setNo_mesa(mesaSeleccionada);
+                        nuevaOrden.setTotal(producto.getPrecio());
+                        if (nuevaOrden != null && ordenes != null) {
+                            ordenes.add(nuevaOrden);
+                            nuevaOrden.INSERT();
+                            UpdateTableOrden(mesaSeleccionada);
+                            System.out.println("orden añadida");
+                        }else {
+                            System.out.println("error");
+                        }
+                    });
                     gdpProductos.add(btnProd, columna, fila);
                     count++;
                 } else {
@@ -168,6 +237,16 @@ public class OrdenesRestaurantes extends Stage {
         vboxProductos.setSpacing(10);
         borderPane.setRight(vboxProductos);
     }
+
+
+    private double calcularTotalOrden() {
+        double total = 0;
+        for (OrdenDAO orden : ordenes) {
+            total += orden.getTotal();
+        }
+        return total;
+    }
+
 
     private void UpdateTableOrden(int mesaId) {
         OrdenDAO ordenDAO = new OrdenDAO();

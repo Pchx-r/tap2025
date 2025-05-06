@@ -198,4 +198,23 @@ public class EmpleadoDAO {
         }
         return listaE;
     }
+
+    public ObservableList<EmpleadoDAO> ACCESS(String usuario, String clave){
+        String query = "SELECT puesto from empleado where user = '"+usuario+"' and aes_decrypt(passwrd,'clave')= '"+clave+"'";
+        ObservableList<EmpleadoDAO> listaE = FXCollections.observableArrayList();
+        EmpleadoDAO objE;
+
+        try {
+            Statement stmt = Conexion.connection.createStatement();
+            ResultSet res = stmt.executeQuery(query);
+            while(res.next()){
+                objE = new EmpleadoDAO();
+                objE.setPuesto(res.getString("puesto"));
+                listaE.add(objE);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return listaE;
+    }
 }

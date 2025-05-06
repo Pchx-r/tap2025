@@ -3,6 +3,7 @@ package org.example.tap2025.modelos;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -80,20 +81,29 @@ public class OrdenDAO {
         this.id_empleado = id_empleado;
     }
 
-    public void INSERT(){
-        String query = "INSERT INTO orden (fecha, total, idCte, no_mesa, id_empleado, estado)"+
-                "VALUES('"+fecha+"','"+total+"','"+idCte+"','"+no_mesa+"','"+id_empleado+"', 'EN PROCESO')";
-        try{
+    public void INSERT() {
+        String query = "INSERT INTO orden (fecha, total, idCte, no_mesa, id_empleado, estado) VALUES (?, ?, ?, ?, ?, 'EN PROCESO')";
+        try {
+            PreparedStatement stmt = Conexion.connection.prepareStatement(query);
+            stmt.setString(1, fecha);
+            stmt.setDouble(2, total);
+            stmt.setInt(3, idCte);
+            stmt.setInt(4, no_mesa);
+            stmt.setInt(5, id_empleado);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void UPDATE(){
+        String query = "UPDATE orden SET estado = 'FINALIZADO' WHERE id_orden = "+id_orden;
+        try {
             Statement stmt = Conexion.connection.createStatement();
             stmt.executeUpdate(query);
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-    public void UPDATE(){
-        String query = "UPDATE orden SET fecha = '"+fecha+"',"+
-                "total = '"+total+"', idCte = '"+idCte+"', "+
-                "no_mesa = '"+no_mesa+"', id_empleado = '"+id_empleado+"' WHERE id_orden = "+id_orden;
     }
 
     public void DELETE(){
@@ -109,7 +119,7 @@ public class OrdenDAO {
         String query = "select o.id_orden,o.fecha,o.total,c.nomCte,o.no_mesa, concat(e.nombre,' ',e.apellido1,' ',e.apellido2) as empleado \n" +
                 "FROM orden o join empleado e on o.id_empleado = e.id_empleado\n" +
                 "             join clientes c on o.idCte = c.idCte\n" +
-                "WHERE no_mesa = "+no_mesa;
+                "WHERE no_mesa = "+no_mesa+" and estado = 'EN PROCESO'";
         ObservableList<OrdenDAO> listaO = FXCollections.observableArrayList();
         OrdenDAO objO;
         try{
@@ -133,7 +143,7 @@ public class OrdenDAO {
     public ObservableList<OrdenDAO> SELECT(){
         String query = "select o.id_orden,o.fecha,o.total,c.nomCte,o.no_mesa, concat(e.nombre,' ',e.apellido1,' ',e.apellido2) as empleado\n" +
                 "FROM orden o join empleado e on o.id_empleado = e.id_empleado\n" +
-                "             join clientes c on o.idCte = c.idCte";
+                "             join clientes c on o.idCte = c.idCte ";
         ObservableList<OrdenDAO> listaO = FXCollections.observableArrayList();
         OrdenDAO objO;
         try{

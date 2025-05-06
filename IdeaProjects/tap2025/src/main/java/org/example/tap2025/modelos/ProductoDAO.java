@@ -2,8 +2,7 @@ package org.example.tap2025.modelos;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 
 public class ProductoDAO {
     private int id_producto;
@@ -11,6 +10,7 @@ public class ProductoDAO {
     private double precio;
     private double costo;
     private int id_categoria;
+    private byte[] imagen;
 
     public int getId_producto() {
         return id_producto;
@@ -52,8 +52,58 @@ public class ProductoDAO {
         this.id_categoria = id_categoria;
     }
 
-    public ObservableList<ProductoDAO> SELECT_BY_CATEGORIA(int categoriaId) {
-        String query = "SELECT * FROM producto WHERE id_categoria = " + categoriaId;
+    public byte[] getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
+    }
+
+    public void INSERT() {
+        String query = "INSERT INTO producto(nombre_producto, precio, costo, id_categoria, imagen) VALUES (?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement stmt = Conexion.connection.prepareStatement(query);
+            stmt.setString(1, nombre_producto);
+            stmt.setDouble(2, precio);
+            stmt.setDouble(3, costo);
+            stmt.setInt(4, id_categoria);
+            stmt.setBytes(5, imagen);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void UPDATE() {
+        String query = "UPDATE producto SET nombre_producto = ?, precio = ?, costo = ?, id_categoria = ?, imagen = ? WHERE id_producto = ?";
+        try {
+            PreparedStatement stmt = Conexion.connection.prepareStatement(query);
+            stmt.setString(1, nombre_producto);
+            stmt.setDouble(2, precio);
+            stmt.setDouble(3, costo);
+            stmt.setInt(4, id_categoria);
+            stmt.setBytes(5, imagen);
+            stmt.setInt(6, id_producto);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void DELETE() {
+        String query = "DELETE FROM producto WHERE id_producto = ?";
+        try {
+            PreparedStatement stmt = Conexion.connection.prepareStatement(query);
+            stmt.setInt(1, id_producto);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ObservableList<ProductoDAO> SELECT() {
+        String query = "SELECT * FROM producto";
         ObservableList<ProductoDAO> listaP = FXCollections.observableArrayList();
         try {
             Statement stmt = Conexion.connection.createStatement();
@@ -65,6 +115,30 @@ public class ProductoDAO {
                 objP.setPrecio(res.getDouble("precio"));
                 objP.setCosto(res.getDouble("costo"));
                 objP.setId_categoria(res.getInt("id_categoria"));
+                objP.setImagen(res.getBytes("imagen"));
+                listaP.add(objP);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return listaP;
+    }
+
+    public ObservableList<ProductoDAO> SELECT_BY_CATEGORIA(int categoriaId) {
+        String query = "SELECT * FROM producto WHERE id_categoria = ?";
+        ObservableList<ProductoDAO> listaP = FXCollections.observableArrayList();
+        try {
+            PreparedStatement stmt = Conexion.connection.prepareStatement(query);
+            stmt.setInt(1, categoriaId);
+            ResultSet res = stmt.executeQuery();
+            while (res.next()) {
+                ProductoDAO objP = new ProductoDAO();
+                objP.setId_producto(res.getInt("id_producto"));
+                objP.setNombre_producto(res.getString("nombre_producto"));
+                objP.setPrecio(res.getDouble("precio"));
+                objP.setCosto(res.getDouble("costo"));
+                objP.setId_categoria(res.getInt("id_categoria"));
+                objP.setImagen(res.getBytes("imagen"));
                 listaP.add(objP);
             }
         } catch (Exception e) {
