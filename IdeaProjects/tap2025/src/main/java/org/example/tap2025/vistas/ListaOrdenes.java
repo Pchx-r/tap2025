@@ -1,6 +1,5 @@
 package org.example.tap2025.vistas;
 
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -8,12 +7,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.example.tap2025.componentes.ButtonCellOrden;
-import org.example.tap2025.modelos.ClientesDAO;
-import org.example.tap2025.modelos.MesaDAO;
-import org.example.tap2025.modelos.OrdenDAO;
+import org.example.tap2025.modelos.OrdenProductoDAO;
 
 public class ListaOrdenes extends Stage {
-    private TableView<OrdenDAO> tbvOrdenes;
+    private TableView<OrdenProductoDAO> tbvOrdenes;
     private VBox vboxOrdenes;
     private Scene escena;
     public ListaOrdenes() {
@@ -30,24 +27,24 @@ public class ListaOrdenes extends Stage {
         escena = new Scene(vboxOrdenes);
     }
     private void CreateTableOrden() {
-        OrdenDAO objO = new OrdenDAO();
-        TableColumn<OrdenDAO, String> tbcID = new TableColumn<>("ID Orden");
+        OrdenProductoDAO objO = new OrdenProductoDAO();
+        TableColumn<OrdenProductoDAO, String> tbcID = new TableColumn<>("ID Orden");
         tbcID.setCellValueFactory(new PropertyValueFactory<>("id_orden"));
-        TableColumn<OrdenDAO, String> tbcFecha = new TableColumn<>("Fecha");
-        tbcFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-        TableColumn<OrdenDAO, String> tbcTotal = new TableColumn<>("Total");
+        TableColumn<OrdenProductoDAO, String> tbcFecha = new TableColumn<>("Fecha");
+        tbcFecha.setCellValueFactory(new PropertyValueFactory<>("Numero de orde"));
+        TableColumn<OrdenProductoDAO, String> tbcTotal = new TableColumn<>("Total");
         tbcTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
-        TableColumn<OrdenDAO, String> tbcCliente = new TableColumn<>("Cliente");
+        TableColumn<OrdenProductoDAO, String> tbcCliente = new TableColumn<>("Cliente");
         tbcCliente.setCellValueFactory(new PropertyValueFactory<>("nomCte"));
-        TableColumn<OrdenDAO, String> tbcNomesa = new TableColumn<>("Número de Mesa");
+        TableColumn<OrdenProductoDAO, String> tbcNomesa = new TableColumn<>("Número de Mesa");
         tbcNomesa.setCellValueFactory(new PropertyValueFactory<>("no_mesa"));
-        TableColumn<OrdenDAO, String> tbcEmpleado = new TableColumn<>("Empleado");
+        TableColumn<OrdenProductoDAO, String> tbcEmpleado = new TableColumn<>("Empleado");
         tbcEmpleado.setCellValueFactory(new PropertyValueFactory<>("empleado"));
 
-        TableColumn<OrdenDAO, String> tbcBorrar = new TableColumn<>("Borrar");
-        tbcBorrar.setCellFactory(new Callback<TableColumn<OrdenDAO, String>, TableCell<OrdenDAO, String>>() {
+        TableColumn<OrdenProductoDAO, String> tbcBorrar = new TableColumn<>("Borrar");
+        tbcBorrar.setCellFactory(new Callback<TableColumn<OrdenProductoDAO, String>, TableCell<OrdenProductoDAO, String>>() {
             @Override
-            public TableCell<OrdenDAO,String> call(TableColumn<OrdenDAO, String> param) {
+            public TableCell<OrdenProductoDAO,String> call(TableColumn<OrdenProductoDAO, String> param) {
                 return new ButtonCellOrden("Borrar");
             }
         });

@@ -1,11 +1,11 @@
 package org.example.tap2025.vistas;
 
 import javafx.scene.control.TableView;
-import org.example.tap2025.modelos.OrdenDAO;
+import org.example.tap2025.modelos.OrdenProductoDAO;
 
 public class Orden {
 
-    public Orden(TableView<OrdenDAO> tableView, OrdenDAO objO) {
+    public Orden(TableView<OrdenProductoDAO> tableView, OrdenProductoDAO objO) {
 
     }
 }

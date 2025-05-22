@@ -33,7 +33,7 @@ public class HelloApplication extends Application {
         mitRestaurante.setOnAction(event -> new ListaClientes());
         mitRompecabezas.setOnAction(event -> new Rompecabezas());
         mitHilos.setOnAction(event -> new Celayork());
-        mitEmpleados.setOnAction(event -> new OrdenesRestaurantes());
+        mitEmpleados.setOnAction(event -> new PantallaAccesoPrincipal());
         mnCompetencia1 = new Menu("Competencia 1");
         mnCompetencia1.getItems().addAll(mitCalculadora, mitRestaurante , mitRompecabezas, mitSalida );
         mnCompetencia2 = new Menu("Competencia 2");
