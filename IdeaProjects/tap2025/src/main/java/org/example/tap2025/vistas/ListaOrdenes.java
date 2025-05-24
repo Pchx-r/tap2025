@@ -31,7 +31,7 @@ public class ListaOrdenes extends Stage {
         TableColumn<OrdenProductoDAO, String> tbcID = new TableColumn<>("ID Orden");
         tbcID.setCellValueFactory(new PropertyValueFactory<>("id_orden"));
         TableColumn<OrdenProductoDAO, String> tbcFecha = new TableColumn<>("Fecha");
-        tbcFecha.setCellValueFactory(new PropertyValueFactory<>("Numero de orde"));
+        tbcFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
         TableColumn<OrdenProductoDAO, String> tbcTotal = new TableColumn<>("Total");
         tbcTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
         TableColumn<OrdenProductoDAO, String> tbcCliente = new TableColumn<>("Cliente");

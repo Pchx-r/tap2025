@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
 import org.example.tap2025.modelos.OrdenProductoDAO;
-import org.example.tap2025.vistas.Orden;
+
 import java.util.Optional;
 
 public class ButtonCellOrden extends TableCell<OrdenProductoDAO, String> {
@@ -18,7 +18,7 @@ public class ButtonCellOrden extends TableCell<OrdenProductoDAO, String> {
         btnCelda.setOnAction(event -> {
             OrdenProductoDAO objO = this.getTableView().getItems().get(this.getIndex());
             if (strLabelBtn.equals("Finalizar")) {
-                new Orden(this.getTableView(), objO);
+                
             } else {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Mensaje del sistema");

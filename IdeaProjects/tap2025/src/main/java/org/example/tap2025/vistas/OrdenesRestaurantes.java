@@ -25,7 +25,7 @@ public class OrdenesRestaurantes extends Stage {
     private HBox hBoxOptions;
     private Scene escena;
     private int mesaSeleccionada;
-    private Button btnOrdenes, btnEmpleados, btnAdmProd, btnAdmCategory, btnTicket, btnInsumos, btnReservaciones;
+    private Button btnOrdenes, btnEmpleados, btnAdmProd, btnAdmCategory, btnTicket, btnReservaciones;
     private Button[] btnMesa;
     private Button[] btnCategoria;
     private GridPane gdpMesas;
@@ -59,7 +59,7 @@ public class OrdenesRestaurantes extends Stage {
         btnAdmProd = new Button("Administrar Productos");
         btnAdmCategory = new Button("Administrar categorias");
         btnTicket = new Button("Ticket");
-
+        btnReservaciones = new Button("Reservaciones");
         categoriaDAO = new CategoriaDAO();
         gdpMesas = new GridPane();
         gdpCategorias = new GridPane();
@@ -92,8 +92,13 @@ public class OrdenesRestaurantes extends Stage {
         imv.setFitWidth(60);
         btnTicket.setGraphic(imv);
         btnTicket.setOnAction(event -> new PantallaTicket());
+        imv = new ImageView(getClass().getResource("/images/reservaciones.jpg").toString());
+        imv.setFitHeight(60);
+        imv.setFitWidth(60);
+        btnReservaciones.setGraphic(imv);
+        btnReservaciones.setOnAction(event -> new Reservaciones());
         hBoxOptions = new HBox();
-        hBoxOptions.getChildren().addAll(btnOrdenes, btnEmpleados,btnAdmProd, btnAdmCategory,btnTicket);
+        hBoxOptions.getChildren().addAll(btnOrdenes, btnEmpleados,btnAdmProd, btnAdmCategory,btnTicket,btnReservaciones);
         borderPane = new BorderPane();
         borderPane.setTop(hBoxOptions);
         borderPane.setLeft(gdpMesas);

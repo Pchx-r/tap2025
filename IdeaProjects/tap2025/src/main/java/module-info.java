@@ -11,5 +11,8 @@ module org.example.tap2025 {
     requires java.sql;
     requires java.xml.crypto;
     requires org.apache.pdfbox;
+    requires javafx.swing;
+    requires kernel;
+    requires layout;
     opens org.example.tap2025.modelos;
 }

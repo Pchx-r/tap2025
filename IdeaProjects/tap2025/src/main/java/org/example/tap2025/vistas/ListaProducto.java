@@ -72,6 +72,7 @@ public class ListaProducto extends Stage {
                 return new ButtonCellProducto("Eliminar");
             }
         });
+
         tbvProductos.getColumns().addAll(tbcIdProducto, tbcNombreProducto, tbcPrecio, tbcCosto, tbcIdCategoria, tbcEditar, tbcEliminar);
         tbvProductos.setItems(objP.SELECT());
     }
